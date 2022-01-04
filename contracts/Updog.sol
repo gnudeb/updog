@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract Updog is ERC20 {
     uint256 public price;
+    mapping(uint256 => uint256) public priceHistory;
 
     uint256 private _priceStep;
 
@@ -18,12 +19,8 @@ contract Updog is ERC20 {
         require(msg.value >= price, "not enough ETH provided");
 
         _mint(msg.sender, 10 ** decimals());
-
-        uint256 extraEthProvided = msg.value - price;
-        if (extraEthProvided > 0) {
-            refundEth(extraEthProvided);
-        }
-
+        refundExtraEth();
+        recordPrice();
         raisePrice();
     }
 
@@ -31,7 +28,15 @@ contract Updog is ERC20 {
         price += _priceStep;
     }
 
-    function refundEth(uint256 amount) private {
-        payable(msg.sender).transfer(amount);
+    function refundExtraEth() private {
+        uint256 extraEthProvided = msg.value - price;
+
+        if (extraEthProvided > 0) {
+            payable(msg.sender).transfer(extraEthProvided);
+        }
+    }
+
+    function recordPrice() private {
+        priceHistory[block.timestamp] = price;
     }
 }
