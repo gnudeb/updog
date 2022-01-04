@@ -18,10 +18,20 @@ contract Updog is ERC20 {
         require(msg.value >= price, "not enough ETH provided");
 
         _mint(msg.sender, 10 ** decimals());
+
+        uint256 extraEthProvided = msg.value - price;
+        if (extraEthProvided > 0) {
+            refundEth(extraEthProvided);
+        }
+
         raisePrice();
     }
 
     function raisePrice() private {
         price += _priceStep;
+    }
+
+    function refundEth(uint256 amount) private {
+        payable(msg.sender).transfer(amount);
     }
 }

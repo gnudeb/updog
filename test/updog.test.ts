@@ -59,5 +59,15 @@ describe("Updog", function () {
 
       expect(priceAfterPurchase).to.be.gt(priceBefore)
     })
+
+    it("excess ETH is refunded after purchase", async () => {
+      const currentPrice = await updog.price()
+      const extra = 1500
+      const providedEth = currentPrice.add(extra)
+
+      const purchase = await updog.buy({ value: providedEth })
+
+      await expect(purchase).to.changeEtherBalance(wallets.alice, -currentPrice)
+    })
   })
 })
