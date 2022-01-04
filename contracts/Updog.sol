@@ -12,6 +12,7 @@ contract Updog is ERC20 {
     }
 
     function buy() public payable {
+        require(msg.value >= price, "not enough ETH provided");
         _mint(msg.sender, 10 ** decimals());
     }
 }

@@ -41,5 +41,14 @@ describe("Updog", function () {
 
       expect(await updog.balanceOf(wallets.alice.address)).to.equal(updogs(1))
     })
+
+    it("can't buy for less than the current price", async () => {
+      const currentPrice = await updog.price()
+      const lowerPrice = currentPrice.sub(1)
+
+      const purchaceAttempt = updog.buy({ value: lowerPrice })
+
+      await expect(purchaceAttempt).to.be.revertedWith("not enough ETH provided")
+    })
   })
 })
