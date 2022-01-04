@@ -7,12 +7,21 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract Updog is ERC20 {
     uint256 public price;
 
-    constructor(uint256 initialPrice) ERC20("Updog", "UDG") {
+    uint256 private _priceStep;
+
+    constructor(uint256 initialPrice, uint256 priceStep) ERC20("Updog", "UDG") {
         price = initialPrice;
+        _priceStep = priceStep;
     }
 
     function buy() public payable {
         require(msg.value >= price, "not enough ETH provided");
+
         _mint(msg.sender, 10 ** decimals());
+        raisePrice();
+    }
+
+    function raisePrice() private {
+        price += _priceStep;
     }
 }

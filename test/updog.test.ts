@@ -26,13 +26,14 @@ describe("Updog", function () {
     wallets = { alice, bob }
   })
 
-  describe("Deployed with initial price of 1 gwei", () => {
+  describe("Deployed with initial price = 1 gwei, step = 1 gwei", () => {
     let updog: Updog
     const basePrice = eth(1, "gwei")
+    const step = eth(1, "gwei")
 
     beforeEach(async () => {
       const Updog = await ethers.getContractFactory("Updog")
-      updog = await Updog.deploy(basePrice)
+      updog = await Updog.deploy(basePrice, step)
       await updog.deployed()
     })
 
@@ -49,6 +50,14 @@ describe("Updog", function () {
       const purchaceAttempt = updog.buy({ value: lowerPrice })
 
       await expect(purchaceAttempt).to.be.revertedWith("not enough ETH provided")
+    })
+
+    it("price increases with each purchase", async () => {
+      const priceBefore = await updog.price()
+      await updog.buy({ value: priceBefore })
+      const priceAfterPurchase = await updog.price()
+
+      expect(priceAfterPurchase).to.be.gt(priceBefore)
     })
   })
 })
