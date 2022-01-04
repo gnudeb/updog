@@ -75,13 +75,13 @@ describe("Updog", function () {
       await expect(purchase).to.changeEtherBalance(wallets.alice, -currentPrice)
     })
 
-    it("purchase costs less than 100000 gas", async () => {
+    it("purchase costs less than 103000 gas", async () => {
       const currentPrice = await updog.price()
 
       const tx = await updog.buy({ value: currentPrice })
       const result = await tx.wait()
 
-      expect(result.gasUsed).to.be.lt(100000)
+      expect(result.gasUsed).to.be.lt(103000)
     })
 
     it("can read historic prices", async () => {
