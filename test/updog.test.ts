@@ -37,6 +37,11 @@ describe("Updog", function () {
       await updog.deployed()
     })
 
+    const buyAtCurrentPrice = async () => {
+      const currentPrice = await updog.price()
+      await updog.buy({ value: currentPrice })
+    }
+
     it("can buy for initial price", async () => {
       await updog.buy({ value: basePrice })
 
@@ -77,6 +82,22 @@ describe("Updog", function () {
       const result = await tx.wait()
 
       expect(result.gasUsed).to.be.lt(100000)
+    })
+
+    it("can read historic prices", async () => {
+      await buyAtCurrentPrice()
+      await buyAtCurrentPrice()
+
+      const record1 = await updog.priceHistory(0)
+      const record2 = await updog.priceHistory(1)
+
+      expect(record1.price).to.eq(eth(1, "gwei"))
+      expect(record2.price).to.eq(eth(2, "gwei"))
+
+      expect(record1.timestamp).to.be.gt(0)
+      expect(record2.timestamp).to.be.gt(0)
+
+      expect(record2.timestamp).to.be.gt(record1.timestamp)
     })
   })
 })

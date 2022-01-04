@@ -4,13 +4,18 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
+struct HistoricPrice {
+    uint64 timestamp;
+    uint64 price;
+}
+
 contract Updog is ERC20 {
-    uint256 public price;
-    mapping(uint256 => uint256) public priceHistory;
+    uint64 public price;
+    HistoricPrice[] public priceHistory;
 
-    uint256 private _priceStep;
+    uint64 private _priceStep;
 
-    constructor(uint256 initialPrice, uint256 priceStep) ERC20("Updog", "UDG") {
+    constructor(uint64 initialPrice, uint64 priceStep) ERC20("Updog", "UDG") {
         price = initialPrice;
         _priceStep = priceStep;
     }
@@ -37,6 +42,6 @@ contract Updog is ERC20 {
     }
 
     function recordPrice() private {
-        priceHistory[block.timestamp] = price;
+        priceHistory.push(HistoricPrice(uint64(block.timestamp), price));
     }
 }
