@@ -11,7 +11,9 @@ struct HistoricPrice {
 
 contract Updog is ERC20 {
     uint64 public price;
-    HistoricPrice[] public priceHistory;
+
+    mapping(uint64 => HistoricPrice) public priceHistory;
+    uint64 public priceHistoryPointer;
 
     uint64 private _priceStep;
 
@@ -42,6 +44,6 @@ contract Updog is ERC20 {
     }
 
     function recordPrice() private {
-        priceHistory.push(HistoricPrice(uint64(block.timestamp), price));
+        priceHistory[priceHistoryPointer++] = HistoricPrice(uint64(block.timestamp), price);
     }
 }
