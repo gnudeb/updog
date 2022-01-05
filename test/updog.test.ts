@@ -82,6 +82,7 @@ describe("Updog", function () {
       const result = await tx.wait()
 
       expect(result.gasUsed).to.be.lt(103000)
+      console.log(`Purchase costs ${result.gasUsed} gas`)
     })
 
     it("can read historic prices", async () => {

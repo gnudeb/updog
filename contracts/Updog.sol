@@ -13,7 +13,7 @@ contract Updog is ERC20 {
     uint64 public price;
 
     mapping(uint64 => HistoricPrice) public priceHistory;
-    uint64 public priceHistoryPointer;
+    uint64 public priceHistoryLength;
 
     uint64 private _priceStep;
 
@@ -44,6 +44,6 @@ contract Updog is ERC20 {
     }
 
     function recordPrice() private {
-        priceHistory[priceHistoryPointer++] = HistoricPrice(uint64(block.timestamp), price);
+        priceHistory[priceHistoryLength++] = HistoricPrice(uint64(block.timestamp), price);
     }
 }
